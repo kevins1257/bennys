@@ -2,20 +2,16 @@ import express from 'express'
 import cors from 'cors'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
-import { Low, JSONFile } from 'lowdb'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
-const PORT = 3000
 
 app.use(cors())
 app.use(express.json())
 app.use(express.static(join(__dirname, 'public')))
 
-// ── Database setup ────────────────────────────────────────────────────────────
-const file = join(__dirname, 'db.json')
-const adapter = new JSONFile(file)
-const db = new Low(adapter, {
+// ── Database ──────────────────────────────────────────────────────────────────
+const defaultData = () => ({
   customers: [],
   services: [
     { id: 1, name: 'Mobile repairs',  price: 350, pts: 350 },
@@ -35,12 +31,29 @@ const db = new Low(adapter, {
   nextId: { customers: 1, services: 8, rewards: 4, history: 1 }
 })
 
-await db.read()
+// In-memory fallback when KV env vars are not set (local dev — data resets on restart)
+let memDb = null
 
-function save() { return db.write() }
-function nextId(type) {
-  const id = db.data.nextId[type]
-  db.data.nextId[type]++
+async function getData() {
+  if (process.env.KV_REST_API_URL) {
+    const { kv } = await import('@vercel/kv')
+    return (await kv.get('bennys_db')) ?? defaultData()
+  }
+  return memDb ?? (memDb = defaultData())
+}
+
+async function saveData(data) {
+  if (process.env.KV_REST_API_URL) {
+    const { kv } = await import('@vercel/kv')
+    await kv.set('bennys_db', data)
+  } else {
+    memDb = data
+  }
+}
+
+function nextId(data, type) {
+  const id = data.nextId[type]
+  data.nextId[type]++
   return id
 }
 
@@ -59,88 +72,99 @@ app.post('/api/login', (req, res) => {
 })
 
 // ── Customers ─────────────────────────────────────────────────────────────────
-app.get('/api/customers', (req, res) => {
-  res.json(db.data.customers)
+app.get('/api/customers', async (req, res) => {
+  const data = await getData()
+  res.json(data.customers)
 })
 
-app.get('/api/customers/phone/:phone', (req, res) => {
+app.get('/api/customers/phone/:phone', async (req, res) => {
+  const data = await getData()
   const phone = req.params.phone.replace(/\D/g, '')
-  const c = db.data.customers.find(c => c.phone === phone)
+  const c = data.customers.find(c => c.phone === phone)
   if (!c) return res.status(404).json({ error: 'Not found' })
   res.json(c)
 })
 
 app.post('/api/customers', async (req, res) => {
+  const data = await getData()
   const { first, last, phone, vehicle } = req.body
   const clean = phone?.replace(/\D/g, '')
   if (!first || !clean) return res.status(400).json({ error: 'Name and phone required' })
-  if (db.data.customers.find(c => c.phone === clean))
+  if (data.customers.find(c => c.phone === clean))
     return res.status(409).json({ error: 'Phone already registered' })
-  const customer = { id: nextId('customers'), first, last: last || '', phone: clean, vehicle: vehicle || '', points: 0, createdAt: new Date().toISOString() }
-  db.data.customers.push(customer)
-  await save()
+  const customer = { id: nextId(data, 'customers'), first, last: last || '', phone: clean, vehicle: vehicle || '', points: 0, createdAt: new Date().toISOString() }
+  data.customers.push(customer)
+  await saveData(data)
   res.json(customer)
 })
 
 app.patch('/api/customers/:id/points', async (req, res) => {
-  const c = db.data.customers.find(c => c.id === Number(req.params.id))
+  const data = await getData()
+  const c = data.customers.find(c => c.id === Number(req.params.id))
   if (!c) return res.status(404).json({ error: 'Not found' })
   c.points = Math.max(0, c.points + (req.body.delta || 0))
-  await save()
+  await saveData(data)
   res.json(c)
 })
 
 // ── Services ──────────────────────────────────────────────────────────────────
-app.get('/api/services', (req, res) => {
-  res.json(db.data.services)
+app.get('/api/services', async (req, res) => {
+  const data = await getData()
+  res.json(data.services)
 })
 
 app.post('/api/services', async (req, res) => {
+  const data = await getData()
   const { name, price, pts } = req.body
   if (!name || price == null || pts == null) return res.status(400).json({ error: 'All fields required' })
-  const svc = { id: nextId('services'), name, price: Number(price), pts: Number(pts) }
-  db.data.services.push(svc)
-  await save()
+  const svc = { id: nextId(data, 'services'), name, price: Number(price), pts: Number(pts) }
+  data.services.push(svc)
+  await saveData(data)
   res.json(svc)
 })
 
 app.delete('/api/services/:id', async (req, res) => {
-  const idx = db.data.services.findIndex(s => s.id === Number(req.params.id))
+  const data = await getData()
+  const idx = data.services.findIndex(s => s.id === Number(req.params.id))
   if (idx === -1) return res.status(404).json({ error: 'Not found' })
-  db.data.services.splice(idx, 1)
-  await save()
+  data.services.splice(idx, 1)
+  await saveData(data)
   res.json({ ok: true })
 })
 
 // ── Rewards ───────────────────────────────────────────────────────────────────
-app.get('/api/rewards', (req, res) => {
-  res.json(db.data.rewards)
+app.get('/api/rewards', async (req, res) => {
+  const data = await getData()
+  res.json(data.rewards)
 })
 
 app.post('/api/rewards', async (req, res) => {
+  const data = await getData()
   const { name, pts, tier, discount } = req.body
   if (!name || pts == null) return res.status(400).json({ error: 'Name and points required' })
-  const r = { id: nextId('rewards'), name, pts: Number(pts), tier: tier || 'All', discount: Number(discount) || 0 }
-  db.data.rewards.push(r)
-  await save()
+  const r = { id: nextId(data, 'rewards'), name, pts: Number(pts), tier: tier || 'All', discount: Number(discount) || 0 }
+  data.rewards.push(r)
+  await saveData(data)
   res.json(r)
 })
 
 app.delete('/api/rewards/:id', async (req, res) => {
-  const idx = db.data.rewards.findIndex(r => r.id === Number(req.params.id))
+  const data = await getData()
+  const idx = data.rewards.findIndex(r => r.id === Number(req.params.id))
   if (idx === -1) return res.status(404).json({ error: 'Not found' })
-  db.data.rewards.splice(idx, 1)
-  await save()
+  data.rewards.splice(idx, 1)
+  await saveData(data)
   res.json({ ok: true })
 })
 
 // ── Orders / History ──────────────────────────────────────────────────────────
 app.post('/api/orders', async (req, res) => {
+  const data = await getData()
   const { customerId, serviceIds } = req.body
-  const c = db.data.customers.find(c => c.id === Number(customerId))
+  const c = data.customers.find(c => c.id === Number(customerId))
   if (!c) return res.status(404).json({ error: 'Customer not found' })
 
-  const svcs = serviceIds.map(id => db.data.services.find(s => s.id === id)).filter(Boolean)
+  const svcs = serviceIds.map(id => data.services.find(s => s.id === id)).filter(Boolean)
   if (!svcs.length) return res.status(400).json({ error: 'No valid services' })
 
   const totalPrice = svcs.reduce((a, s) => a + s.price, 0)
@@ -149,7 +173,7 @@ app.post('/api/orders', async (req, res) => {
   c.points += totalPts
 
   const entry = {
-    id: nextId('history'),
+    id: nextId(data, 'history'),
     customerId: c.id,
     customerName: `${c.first} ${c.last}`,
     services: svcs.map(s => s.name).join(', '),
@@ -157,29 +181,37 @@ app.post('/api/orders', async (req, res) => {
     pts: totalPts,
     date: new Date().toISOString()
   }
-  db.data.history.push(entry)
-  await save()
+  data.history.push(entry)
+  await saveData(data)
   res.json({ customer: c, order: entry })
 })
 
-app.get('/api/history', (req, res) => {
-  res.json(db.data.history.slice().reverse())
+app.get('/api/history', async (req, res) => {
+  const data = await getData()
+  res.json(data.history.slice().reverse())
 })
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
-app.get('/api/stats', (req, res) => {
+app.get('/api/stats', async (req, res) => {
+  const data = await getData()
   const today = new Date().toDateString()
   res.json({
-    totalMembers: db.data.customers.length,
-    totalPoints:  db.data.customers.reduce((a, c) => a + c.points, 0),
-    ordersToday:  db.data.history.filter(h => new Date(h.date).toDateString() === today).length,
-    revenueToday: db.data.history
+    totalMembers: data.customers.length,
+    totalPoints:  data.customers.reduce((a, c) => a + c.points, 0),
+    ordersToday:  data.history.filter(h => new Date(h.date).toDateString() === today).length,
+    revenueToday: data.history
       .filter(h => new Date(h.date).toDateString() === today)
       .reduce((a, h) => a + h.total, 0)
   })
 })
 
-app.listen(PORT, () => {
-  console.log(`\n🔧 Benny's Motor Works Rewards`)
-  console.log(`   Running at http://localhost:${PORT}\n`)
-})
+// Listen locally; Vercel imports this file and uses the exported app instead
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = 3000
+  app.listen(PORT, () => {
+    console.log(`\n Benny's Motor Works Rewards`)
+    console.log(`   Running at http://localhost:${PORT}\n`)
+  })
+}
+
+export default app
