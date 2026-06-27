@@ -14,21 +14,23 @@ app.use(express.static(join(__dirname, 'public')))
 const defaultData = () => ({
   customers: [],
   services: [
-    { id: 1, name: 'Mobile repairs',  price: 350, pts: 350 },
-    { id: 2, name: 'Basic repairs',   price: 250, pts: 250 },
-    { id: 3, name: 'Repair kit',      price: 375, pts: 375 },
-    { id: 4, name: 'Core services',   price: 250, pts: 250 },
-    { id: 5, name: 'Labor charge',    price: 100, pts: 0 },
-    { id: 6, name: 'Cleaning kit',    price: 75,  pts: 75  },
-    { id: 7, name: 'Duct tape',       price: 75,  pts: 75  },
+    { id: 1, name: 'Mobile repairs',     price: 35000 },
+    { id: 2, name: 'Basic repairs',      price: 25000 },
+    { id: 3, name: 'Repair kit',         price: 3750  },
+    { id: 4, name: 'Core services',      price: 25000 },
+    { id: 5, name: 'Labor charge',       price: 10000 },
+    { id: 6, name: 'Cleaning kit',       price: 750   },
+    { id: 7, name: 'Duct tape',          price: 750   },
+    { id: 8, name: 'Custom paint job',   price: 20000 },
+    { id: 9, name: 'Full cosmetics pkg', price: 50000 },
   ],
   rewards: [
-    { id: 1, name: 'Free cleaning kit',     pts: 300,  tier: 'Bronze', discount: 100 },
-    { id: 2, name: '10% off next service',  pts: 500,  tier: 'Silver', discount: 10  },
-    { id: 3, name: 'Free labor charge',     pts: 1000, tier: 'Gold',   discount: 100 },
+    { id: 1, name: '$5k shop credit off purchase', pts: 10, tier: 'All',    note: 'Min. $15k qualifying purchase. 1 per invoice. Cannot combine w/ other discounts.' },
+    { id: 2, name: '10 free repair kits',           pts: 5,  tier: 'Bronze', note: 'Applied as free items on next visit.' },
+    { id: 3, name: 'Full cosmetics pkg (1 car)',    pts: 20, tier: 'Silver', note: "One car's worth of cosmetics on next visit." },
   ],
   history: [],
-  nextId: { customers: 1, services: 8, rewards: 4, history: 1 }
+  nextId: { customers: 1, services: 10, rewards: 4, history: 1 }
 })
 
 // In-memory fallback when KV env vars are not set (local dev — data resets on restart)
@@ -92,7 +94,11 @@ app.post('/api/customers', async (req, res) => {
   if (!first || !clean) return res.status(400).json({ error: 'Name and phone required' })
   if (data.customers.find(c => c.phone === clean))
     return res.status(409).json({ error: 'Phone already registered' })
-  const customer = { id: nextId(data, 'customers'), first, last: last || '', phone: clean, vehicle: vehicle || '', points: 0, createdAt: new Date().toISOString() }
+  const customer = {
+    id: nextId(data, 'customers'), first, last: last || '', phone: clean,
+    vehicle: vehicle || '', points: 0, lifetimeSpend: 0, lifetimePoints: 0,
+    createdAt: new Date().toISOString()
+  }
   data.customers.push(customer)
   await saveData(data)
   res.json(customer)
@@ -107,6 +113,56 @@ app.patch('/api/customers/:id/points', async (req, res) => {
   res.json(c)
 })
 
+// Award bonus points (referral, event attendance, etc.)
+app.post('/api/customers/:id/bonus', async (req, res) => {
+  const data = await getData()
+  const c = data.customers.find(c => c.id === Number(req.params.id))
+  if (!c) return res.status(404).json({ error: 'Not found' })
+  const { pts, reason } = req.body
+  if (!pts || !reason) return res.status(400).json({ error: 'pts and reason required' })
+  const amount = Number(pts)
+  c.points += amount
+  c.lifetimePoints = (c.lifetimePoints || 0) + amount
+  const entry = {
+    id: nextId(data, 'history'),
+    type: 'bonus',
+    customerId: c.id,
+    customerName: `${c.first} ${c.last}`,
+    services: reason,
+    total: 0,
+    pts: amount,
+    date: new Date().toISOString()
+  }
+  data.history.push(entry)
+  await saveData(data)
+  res.json({ customer: c, entry })
+})
+
+// Redeem a reward (deducts points, logs redemption)
+app.post('/api/customers/:id/redeem', async (req, res) => {
+  const data = await getData()
+  const c = data.customers.find(c => c.id === Number(req.params.id))
+  if (!c) return res.status(404).json({ error: 'Not found' })
+  const { rewardId } = req.body
+  const reward = data.rewards.find(r => r.id === Number(rewardId))
+  if (!reward) return res.status(404).json({ error: 'Reward not found' })
+  if (c.points < reward.pts) return res.status(400).json({ error: 'Insufficient points' })
+  c.points -= reward.pts
+  const entry = {
+    id: nextId(data, 'history'),
+    type: 'redeem',
+    customerId: c.id,
+    customerName: `${c.first} ${c.last}`,
+    services: `Redeemed: ${reward.name}`,
+    total: 0,
+    pts: -reward.pts,
+    date: new Date().toISOString()
+  }
+  data.history.push(entry)
+  await saveData(data)
+  res.json({ customer: c, entry })
+})
+
 // ── Services ──────────────────────────────────────────────────────────────────
 app.get('/api/services', async (req, res) => {
   const data = await getData()
@@ -115,9 +171,9 @@ app.get('/api/services', async (req, res) => {
 
 app.post('/api/services', async (req, res) => {
   const data = await getData()
-  const { name, price, pts } = req.body
-  if (!name || price == null || pts == null) return res.status(400).json({ error: 'All fields required' })
-  const svc = { id: nextId(data, 'services'), name, price: Number(price), pts: Number(pts) }
+  const { name, price } = req.body
+  if (!name || price == null) return res.status(400).json({ error: 'Name and price required' })
+  const svc = { id: nextId(data, 'services'), name, price: Number(price) }
   data.services.push(svc)
   await saveData(data)
   res.json(svc)
@@ -140,9 +196,9 @@ app.get('/api/rewards', async (req, res) => {
 
 app.post('/api/rewards', async (req, res) => {
   const data = await getData()
-  const { name, pts, tier, discount } = req.body
+  const { name, pts, tier, note } = req.body
   if (!name || pts == null) return res.status(400).json({ error: 'Name and points required' })
-  const r = { id: nextId(data, 'rewards'), name, pts: Number(pts), tier: tier || 'All', discount: Number(discount) || 0 }
+  const r = { id: nextId(data, 'rewards'), name, pts: Number(pts), tier: tier || 'All', note: note || '' }
   data.rewards.push(r)
   await saveData(data)
   res.json(r)
@@ -168,17 +224,21 @@ app.post('/api/orders', async (req, res) => {
   if (!svcs.length) return res.status(400).json({ error: 'No valid services' })
 
   const totalPrice = svcs.reduce((a, s) => a + s.price, 0)
-  const totalPts   = svcs.reduce((a, s) => a + s.pts, 0)
+  // 1 point per $10,000 spent — points awarded after payment received
+  const earnedPts = Math.floor(totalPrice / 10000)
 
-  c.points += totalPts
+  c.points += earnedPts
+  c.lifetimeSpend = (c.lifetimeSpend || 0) + totalPrice
+  c.lifetimePoints = (c.lifetimePoints || 0) + earnedPts
 
   const entry = {
     id: nextId(data, 'history'),
+    type: 'order',
     customerId: c.id,
     customerName: `${c.first} ${c.last}`,
     services: svcs.map(s => s.name).join(', '),
     total: totalPrice,
-    pts: totalPts,
+    pts: earnedPts,
     date: new Date().toISOString()
   }
   data.history.push(entry)
@@ -195,13 +255,12 @@ app.get('/api/history', async (req, res) => {
 app.get('/api/stats', async (req, res) => {
   const data = await getData()
   const today = new Date().toDateString()
+  const todayOrders = data.history.filter(h => new Date(h.date).toDateString() === today && (h.type === 'order' || !h.type))
   res.json({
     totalMembers: data.customers.length,
     totalPoints:  data.customers.reduce((a, c) => a + c.points, 0),
-    ordersToday:  data.history.filter(h => new Date(h.date).toDateString() === today).length,
-    revenueToday: data.history
-      .filter(h => new Date(h.date).toDateString() === today)
-      .reduce((a, h) => a + h.total, 0)
+    ordersToday:  todayOrders.length,
+    revenueToday: todayOrders.reduce((a, h) => a + h.total, 0)
   })
 })
 

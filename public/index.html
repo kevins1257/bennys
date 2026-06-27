@@ -247,7 +247,7 @@ body {
   border-radius: 12px;
   color: #fff;
   font-size: 0.92rem;
-  font-family: inherit; 
+  font-family: inherit;
   transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
 
@@ -398,6 +398,7 @@ body {
 .badge-gold   { background: #2a1800; color: #F59E0B; border: 1px solid #5a3800; }
 .badge-silver { background: #1a1a20; color: #9CA3AF; border: 1px solid #444; }
 .badge-bronze { background: #1e1000; color: #CD7C4A; border: 1px solid #4a2800; }
+.badge-member { background: #111; color: #555; border: 1px solid #333; }
 
 /* ── FORMS ── */
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
@@ -417,9 +418,27 @@ body {
 .tier-card.silver-t { border-color: #9CA3AF; }
 .tier-card.bronze-t { border-color: #CD7C4A; }
 .tier-name { font-size: 12px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-.tier-pts  { font-size: 10px; color: #444; margin-bottom: 8px; letter-spacing: 1px; }
+.tier-thresh { font-size: 10px; color: #555; margin-bottom: 8px; letter-spacing: 1px; }
 .tier-disc { font-size: 28px; font-weight: 900; color: var(--red); }
 .tier-sub  { font-size: 9px; color: #444; margin-top: 3px; letter-spacing: 1px; text-transform: uppercase; }
+.tier-perks { margin-top: 10px; padding-top: 10px; border-top: 1px solid #1e1e1e; text-align: left; }
+.tier-perk  { font-size: 9px; color: #555; letter-spacing: 1px; padding: 2px 0; }
+.tier-perk::before { content: '✓ '; color: var(--red); }
+
+/* ── POINTS SCALE ── */
+.pts-scale { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
+.pts-scale-item { background: #0d0d0d; border: 1px solid #222; border-radius: 6px; padding: 8px 12px; text-align: center; flex: 1; min-width: 90px; }
+.pts-scale-spend { font-size: 13px; font-weight: 900; color: #fff; }
+.pts-scale-arrow { font-size: 9px; color: #333; margin: 3px 0; }
+.pts-scale-earn  { font-size: 10px; color: var(--red); font-weight: 900; letter-spacing: 1px; }
+.pts-scale-credit { font-size: 9px; color: #555; letter-spacing: 1px; margin-top: 2px; }
+
+/* ── FINE PRINT ── */
+.fine-print { background: #080808; border: 1px solid #1a1a1a; border-radius: 8px; padding: 1rem 1.25rem; }
+.fine-print h4 { font-size: 9px; letter-spacing: 2px; color: #333; text-transform: uppercase; margin-bottom: 8px; }
+.fine-print ul { list-style: none; }
+.fine-print li { font-size: 10px; color: #444; letter-spacing: 0.5px; padding: 2px 0; }
+.fine-print li::before { content: '— '; }
 
 /* ── EMPLOYEE ── */
 #empScreen { flex-direction: column; min-height: 100vh; }
@@ -442,6 +461,12 @@ body {
 .points-bar  { background: #1a1a1a; border-radius: 20px; height: 6px; margin: 8px 0; overflow: hidden; }
 .points-fill { height: 100%; background: var(--red); border-radius: 20px; transition: width .6s; box-shadow: 0 0 8px var(--red-glow); }
 
+/* Tier benefits strip */
+.tier-benefits-strip { background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 8px; padding: 10px 14px; margin-top: 10px; display: flex; gap: 16px; flex-wrap: wrap; }
+.tbenefit { font-size: 10px; color: #555; letter-spacing: 1px; }
+.tbenefit strong { color: var(--gold); }
+.tbenefit.no-tier { color: #333; font-style: italic; }
+
 .order-section { background: var(--steel); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; display: none; }
 .order-section h4 { font-size: 10px; letter-spacing: 2px; color: #555; text-transform: uppercase; margin-bottom: 1rem; }
 
@@ -451,12 +476,23 @@ body {
 .service-btn.selected { border-color: var(--red); background: #160808; box-shadow: 0 0 8px var(--red-glow); }
 .sname { font-weight: 900; color: #ddd; font-size: 11px; letter-spacing: .5px; }
 .sprice { color: var(--red); font-size: 13px; font-weight: 900; margin-top: 3px; }
-.spts   { color: #333; font-size: 10px; letter-spacing: 1px; margin-top: 1px; }
 
 .total-bar { background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 8px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
 .tlabel { font-size: 9px; letter-spacing: 2px; color: #444; text-transform: uppercase; }
 .tval { font-size: 22px; font-weight: 900; color: #fff; }
 .tpts { font-size: 11px; color: var(--red); letter-spacing: 1px; margin-top: 2px; }
+
+/* Redemption section */
+.redeem-section { background: #0a0a12; border: 1px solid #1a1a2a; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; display: none; }
+.redeem-section h4 { font-size: 10px; letter-spacing: 2px; color: #555; text-transform: uppercase; margin-bottom: 1rem; }
+.redeem-list { display: flex; flex-direction: column; gap: 8px; }
+.redeem-item { display: flex; align-items: center; justify-content: space-between; background: #0d0d12; border: 1px solid #222; border-radius: 8px; padding: 10px 14px; }
+.redeem-item.disabled { opacity: 0.35; }
+.redeem-name { font-size: 12px; color: #bbb; font-weight: 700; }
+.redeem-cost { font-size: 10px; color: var(--red); letter-spacing: 1px; margin-top: 2px; }
+.redeem-note { font-size: 9px; color: #444; margin-top: 3px; letter-spacing: 0.5px; }
+.btn-redeem { background: transparent; border: 1px solid var(--red); color: var(--red); border-radius: 6px; padding: 5px 12px; font-size: 10px; cursor: pointer; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; font-family: inherit; white-space: nowrap; }
+.btn-redeem:disabled { border-color: #333; color: #333; cursor: not-allowed; }
 
 .register-new { background: #100606; border: 1.5px solid var(--red); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; display: none; }
 .register-new h4 { font-size: 10px; letter-spacing: 2px; color: var(--red); text-transform: uppercase; margin-bottom: 1rem; }
@@ -468,6 +504,12 @@ body {
 
 /* ── LOADING ── */
 .loading { color: #333; font-size: 11px; letter-spacing: 2px; padding: 1rem 0; text-transform: uppercase; }
+
+/* ── BONUS TYPE BADGES ── */
+.type-badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 9px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+.type-order  { background: #0d1a0d; color: #4ade80; border: 1px solid #1a3a1a; }
+.type-bonus  { background: #0d0d1e; color: #818cf8; border: 1px solid #1a1a3a; }
+.type-redeem { background: #1e0d0d; color: #f87171; border: 1px solid #3a1a1a; }
 </style>
 </head>
 <body>
@@ -565,6 +607,7 @@ body {
       <div class="nav-item" onclick="showTab('customers',this)"><i class="ti ti-users"></i> Customers</div>
       <div class="nav-item" onclick="showTab('tiers',this)"><i class="ti ti-trophy"></i> Tiers</div>
       <div class="nav-item" onclick="showTab('services',this)"><i class="ti ti-tool"></i> Services</div>
+      <div class="nav-item" onclick="showTab('bonuses',this)"><i class="ti ti-star"></i> Bonuses</div>
       <div class="nav-item" onclick="showTab('history',this)"><i class="ti ti-list"></i> History</div>
     </div>
     <div class="main-content">
@@ -581,8 +624,8 @@ body {
         <div class="card">
           <h4>Recent members</h4>
           <table class="rtable">
-            <thead><tr><th>Name</th><th>Phone</th><th>Points</th><th>Tier</th></tr></thead>
-            <tbody id="recentTable"><tr><td colspan="4" class="loading">Loading…</td></tr></tbody>
+            <thead><tr><th>Name</th><th>Phone</th><th>Pts</th><th>Lifetime Spend</th><th>Tier</th></tr></thead>
+            <tbody id="recentTable"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -607,8 +650,8 @@ body {
         </div>
         <div class="card">
           <table class="rtable">
-            <thead><tr><th>Name</th><th>Phone</th><th>Vehicle</th><th>Points</th><th>Tier</th></tr></thead>
-            <tbody id="custTable"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
+            <thead><tr><th>Name</th><th>Phone</th><th>Vehicle</th><th>Pts</th><th>Lifetime Spend</th><th>Tier</th></tr></thead>
+            <tbody id="custTable"><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -616,67 +659,160 @@ body {
       <!-- TIERS -->
       <div class="panel" id="tab-tiers">
         <div class="ph"><h3>Reward Tiers</h3></div>
+
+        <!-- Points scale -->
+        <div class="card">
+          <h4>Points earning scale — 1 pt per $10,000 spent</h4>
+          <div class="pts-scale">
+            <div class="pts-scale-item">
+              <div class="pts-scale-spend">$50k</div>
+              <div class="pts-scale-arrow">↓</div>
+              <div class="pts-scale-earn">5 pts</div>
+              <div class="pts-scale-credit">$2.5k credit</div>
+            </div>
+            <div class="pts-scale-item">
+              <div class="pts-scale-spend">$100k</div>
+              <div class="pts-scale-arrow">↓</div>
+              <div class="pts-scale-earn">10 pts</div>
+              <div class="pts-scale-credit">$5k credit</div>
+            </div>
+            <div class="pts-scale-item">
+              <div class="pts-scale-spend">$200k</div>
+              <div class="pts-scale-arrow">↓</div>
+              <div class="pts-scale-earn">20 pts</div>
+              <div class="pts-scale-credit">$10k credit</div>
+            </div>
+            <div class="pts-scale-item">
+              <div class="pts-scale-spend">$300k</div>
+              <div class="pts-scale-arrow">↓</div>
+              <div class="pts-scale-earn">30 pts</div>
+              <div class="pts-scale-credit">$15k credit</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tier cards -->
         <div class="tier-grid">
           <div class="tier-card bronze-t">
             <div class="tier-name" style="color:#CD7C4A">Bronze</div>
-            <div class="tier-pts">0 – 499 pts</div>
-            <div class="tier-disc">5%</div>
-            <div class="tier-sub">off labor</div>
+            <div class="tier-thresh">$100k lifetime spend</div>
+            <div class="tier-disc">2%</div>
+            <div class="tier-sub">off invoices</div>
+            <div class="tier-perks">
+              <div class="tier-perk">2% off all invoices</div>
+              <div class="tier-perk">1 free repair kit / week</div>
+            </div>
           </div>
           <div class="tier-card silver-t">
             <div class="tier-name" style="color:#9CA3AF">Silver</div>
-            <div class="tier-pts">500 – 999 pts</div>
-            <div class="tier-disc">10%</div>
-            <div class="tier-sub">off labor</div>
+            <div class="tier-thresh">$200k lifetime spend</div>
+            <div class="tier-disc">5%</div>
+            <div class="tier-sub">off invoices</div>
+            <div class="tier-perks">
+              <div class="tier-perk">5% off all invoices</div>
+              <div class="tier-perk">3 free repair kits / week</div>
+            </div>
           </div>
           <div class="tier-card gold-t">
             <div class="tier-name" style="color:#F59E0B">Gold</div>
-            <div class="tier-pts">1000+ pts</div>
-            <div class="tier-disc">15%</div>
-            <div class="tier-sub">off labor</div>
+            <div class="tier-thresh">$450k lifetime spend</div>
+            <div class="tier-disc">8%</div>
+            <div class="tier-sub">off invoices</div>
+            <div class="tier-perks">
+              <div class="tier-perk">8% off all invoices</div>
+              <div class="tier-perk">5 free repair kits / week</div>
+              <div class="tier-perk">Free paint on release days</div>
+            </div>
           </div>
         </div>
+
+        <!-- Reward menu -->
         <div class="card">
+          <h4>Reward menu</h4>
+          <table class="rtable">
+            <thead><tr><th>Reward</th><th>Points</th><th>Min. Tier</th><th>Notes</th><th></th></tr></thead>
+            <tbody id="rewardsTable"></tbody>
+          </table>
+        </div>
+        <div class="card toggle-form" id="addRewardForm" style="display:block">
           <h4>Add reward</h4>
           <div class="form-row">
             <div class="field"><label>Reward name</label><input type="text" id="rewardName" placeholder="Free cleaning kit" /></div>
-            <div class="field"><label>Points required</label><input type="number" id="rewardPts" placeholder="300" /></div>
+            <div class="field"><label>Points required</label><input type="number" id="rewardPts" placeholder="10" /></div>
           </div>
           <div class="form-row">
             <div class="field"><label>Min. tier</label>
               <select id="rewardTier"><option>All</option><option>Bronze</option><option>Silver</option><option>Gold</option></select>
             </div>
-            <div class="field"><label>Discount %</label><input type="number" id="rewardDisc" placeholder="10" /></div>
+            <div class="field"><label>Notes / conditions</label><input type="text" id="rewardNote" placeholder="Min. $15k purchase required" /></div>
           </div>
           <button class="btn-red" onclick="addReward()">Add reward</button>
         </div>
-        <div class="card">
-          <h4>Current rewards</h4>
-          <table class="rtable">
-            <thead><tr><th>Reward</th><th>Points</th><th>Tier</th><th>Discount</th><th></th></tr></thead>
-            <tbody id="rewardsTable"></tbody>
-          </table>
+
+        <!-- Fine print -->
+        <div class="fine-print">
+          <h4><i class="ti ti-info-circle"></i> &nbsp;Fine print</h4>
+          <ul>
+            <li>Points earned after payment received</li>
+            <li>Points cannot be transferred or sold</li>
+            <li>Points have no cash value</li>
+            <li>Shop credits cannot be combined with other discounts</li>
+            <li>1 redemption per invoice</li>
+            <li>Cannot redeem points to get cashback</li>
+            <li>Referral bonus: 1 pt per qualifying purchase of $10k+, max 2 per week</li>
+            <li>Event attendance: 1 pt per verified Benny's event attended</li>
+          </ul>
         </div>
       </div>
 
       <!-- SERVICES -->
       <div class="panel" id="tab-services">
-        <div class="ph"><h3>Services & Points</h3></div>
+        <div class="ph"><h3>Services</h3></div>
         <div class="card">
           <h4>Add service</h4>
           <div class="form-row">
             <div class="field"><label>Service name</label><input type="text" id="svcName" /></div>
             <div class="field"><label>Price ($)</label><input type="number" id="svcPrice" /></div>
           </div>
-          <div class="form-row">
-            <div class="field"><label>Points awarded</label><input type="number" id="svcPts" /></div>
-          </div>
+          <p style="font-size:10px;color:#444;margin-bottom:10px;letter-spacing:1px;">Points are auto-calculated: 1 pt per $10,000 in the order total.</p>
           <button class="btn-red" onclick="addService()">Add service</button>
         </div>
         <div class="card">
           <table class="rtable">
-            <thead><tr><th>Service</th><th>Price</th><th>Points</th><th></th></tr></thead>
+            <thead><tr><th>Service</th><th>Price</th><th></th></tr></thead>
             <tbody id="svcTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BONUSES -->
+      <div class="panel" id="tab-bonuses">
+        <div class="ph"><h3>Bonus Points</h3></div>
+        <div class="card">
+          <h4>Award bonus points</h4>
+          <p style="font-size:10px;color:#444;margin-bottom:14px;letter-spacing:1px;">Use for referrals (max 2/week per customer, qualifying purchase $10k+) and event attendance.</p>
+          <div class="form-row">
+            <div class="field"><label>Customer phone</label><input type="tel" id="bonusPhone" placeholder="5551234567" /></div>
+            <div class="field"><label>Bonus type</label>
+              <select id="bonusType" onchange="updateBonusPts()">
+                <option value="Referral bonus (qualifying purchase $10k+)">Referral</option>
+                <option value="Benny's event attendance bonus">Event Attendance</option>
+                <option value="Manual bonus">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Points to award</label><input type="number" id="bonusPts" value="1" min="1" /></div>
+            <div class="field"><label>Note (optional)</label><input type="text" id="bonusNote" placeholder="Event name, referral name, etc." /></div>
+          </div>
+          <button class="btn-red" onclick="awardBonus()">Award Points</button>
+          <div id="bonusMsg" style="font-size:11px;color:var(--red);margin-top:8px;letter-spacing:1px;"></div>
+        </div>
+        <div class="card">
+          <h4>Recent bonuses & redemptions</h4>
+          <table class="rtable">
+            <thead><tr><th>Date</th><th>Customer</th><th>Type</th><th>Description</th><th>Pts</th></tr></thead>
+            <tbody id="bonusHistTable"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -686,8 +822,8 @@ body {
         <div class="ph"><h3>Transaction History</h3></div>
         <div class="card">
           <table class="rtable">
-            <thead><tr><th>Date</th><th>Customer</th><th>Services</th><th>Total</th><th>Pts earned</th></tr></thead>
-            <tbody id="histTable"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
+            <thead><tr><th>Date</th><th>Customer</th><th>Type</th><th>Description</th><th>Total</th><th>Pts</th></tr></thead>
+            <tbody id="histTable"><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -738,15 +874,24 @@ body {
         </div>
         <div style="text-align:right">
           <div class="pts-big" id="custPts">0</div>
-          <div style="font-size:9px;color:#333;letter-spacing:1px;text-transform:uppercase;">points</div>
+          <div style="font-size:9px;color:#333;letter-spacing:1px;text-transform:uppercase;">pts available</div>
           <div style="margin-top:4px" id="custTierBadge"></div>
         </div>
       </div>
       <div class="points-bar"><div class="points-fill" id="pointsFill" style="width:0%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:10px;color:#333;letter-spacing:1px;text-transform:uppercase;">
-        <span id="custTierLabel">Bronze</span>
-        <span id="custNextTier">500 pts to Silver</span>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:#333;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">
+        <span id="custTierLabel">Member</span>
+        <span id="custNextTier">—</span>
       </div>
+      <!-- Tier benefits strip -->
+      <div class="tier-benefits-strip" id="tierBenefitsStrip"></div>
+    </div>
+
+    <!-- Redemption section -->
+    <div class="redeem-section" id="redeemSection">
+      <h4><i class="ti ti-gift"></i> &nbsp;Redeem a reward</h4>
+      <div class="redeem-list" id="redeemList"></div>
+      <p style="font-size:9px;color:#333;letter-spacing:1px;margin-top:10px;">1 redemption per invoice · Cannot combine with other discounts · No cashback</p>
     </div>
 
     <div class="order-section" id="orderSection">
@@ -770,6 +915,7 @@ const API = '/api'
 let currentCustomer = null
 let selectedServiceIds = []
 let empServices = []
+let allRewards = []
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 async function doLogin() {
@@ -793,6 +939,7 @@ function doLogout() {
   document.getElementById('empPhone').value = ''
   document.getElementById('custFound').style.display = 'none'
   document.getElementById('orderSection').style.display = 'none'
+  document.getElementById('redeemSection').style.display = 'none'
   document.getElementById('noCustMsg').style.display = 'none'
   document.getElementById('registerNew').style.display = 'none'
   document.getElementById('loginUser').value = ''
@@ -808,14 +955,14 @@ function show(id) {
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 async function loadAdmin() {
-  await Promise.all([loadStats(), loadCustomers(), loadRewards(), loadServices(), loadHistory()])
+  await Promise.all([loadStats(), loadCustomers(), loadRewards(), loadServices(), loadHistory(), loadBonusHistory()])
 }
 
 async function loadStats() {
   const r = await fetch(`${API}/stats`).then(r=>r.json())
   document.getElementById('statMembers').textContent = r.totalMembers
   document.getElementById('statOrders').textContent  = r.ordersToday
-  document.getElementById('statRevenue').textContent = '$' + r.revenueToday.toFixed(0)
+  document.getElementById('statRevenue').textContent = '$' + r.revenueToday.toLocaleString()
   document.getElementById('statPoints').textContent  = r.totalPoints.toLocaleString()
 }
 
@@ -823,32 +970,90 @@ async function loadCustomers() {
   const custs = await fetch(`${API}/customers`).then(r=>r.json())
   const recent = custs.slice().reverse().slice(0,6)
   document.getElementById('recentTable').innerHTML = recent.length
-    ? recent.map(c => `<tr><td>${c.first} ${c.last}</td><td>${fmtPhone(c.phone)}</td><td>${c.points}</td><td>${tierBadge(getTier(c.points))}</td></tr>`).join('')
-    : '<tr><td colspan="4" style="color:#333">No customers yet</td></tr>'
-  document.getElementById('custTable').innerHTML = custs.length
-    ? custs.map(c => `<tr><td>${c.first} ${c.last}</td><td>${fmtPhone(c.phone)}</td><td>${c.vehicle||'—'}</td><td>${c.points}</td><td>${tierBadge(getTier(c.points))}</td></tr>`).join('')
+    ? recent.map(c => `<tr>
+        <td>${c.first} ${c.last}</td>
+        <td>${fmtPhone(c.phone)}</td>
+        <td>${c.points}</td>
+        <td>$${(c.lifetimeSpend||0).toLocaleString()}</td>
+        <td>${tierBadge(getTier(c.lifetimeSpend||0))}</td>
+      </tr>`).join('')
     : '<tr><td colspan="5" style="color:#333">No customers yet</td></tr>'
+  document.getElementById('custTable').innerHTML = custs.length
+    ? custs.map(c => `<tr>
+        <td>${c.first} ${c.last}</td>
+        <td>${fmtPhone(c.phone)}</td>
+        <td>${c.vehicle||'—'}</td>
+        <td>${c.points}</td>
+        <td>$${(c.lifetimeSpend||0).toLocaleString()}</td>
+        <td>${tierBadge(getTier(c.lifetimeSpend||0))}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="color:#333">No customers yet</td></tr>'
 }
 
 async function loadServices() {
   const svcs = await fetch(`${API}/services`).then(r=>r.json())
   document.getElementById('svcTable').innerHTML = svcs.map(s =>
-    `<tr><td>${s.name}</td><td>$${s.price.toFixed(2)}</td><td>${s.pts} pts</td><td><button class="del-btn" onclick="delService(${s.id})">Remove</button></td></tr>`
+    `<tr><td>${s.name}</td><td>$${s.price.toLocaleString()}</td><td><button class="del-btn" onclick="delService(${s.id})">Remove</button></td></tr>`
   ).join('')
 }
 
 async function loadRewards() {
-  const rws = await fetch(`${API}/rewards`).then(r=>r.json())
-  document.getElementById('rewardsTable').innerHTML = rws.map(r =>
-    `<tr><td>${r.name}</td><td>${r.pts} pts</td><td>${r.tier}</td><td>${r.discount}%</td><td><button class="del-btn" onclick="delReward(${r.id})">Remove</button></td></tr>`
-  ).join('')
+  allRewards = await fetch(`${API}/rewards`).then(r=>r.json())
+  document.getElementById('rewardsTable').innerHTML = allRewards.length
+    ? allRewards.map(r =>
+        `<tr>
+          <td>${r.name}</td>
+          <td>${r.pts} pts</td>
+          <td>${tierBadge(r.tier === 'All' ? null : r.tier) || r.tier}</td>
+          <td style="font-size:10px;color:#444">${r.note||'—'}</td>
+          <td><button class="del-btn" onclick="delReward(${r.id})">Remove</button></td>
+        </tr>`).join('')
+    : '<tr><td colspan="5" style="color:#333">No rewards yet</td></tr>'
 }
 
 async function loadHistory() {
   const hist = await fetch(`${API}/history`).then(r=>r.json())
   document.getElementById('histTable').innerHTML = hist.length
-    ? hist.map(h => `<tr><td>${new Date(h.date).toLocaleDateString()}</td><td>${h.customerName}</td><td>${h.services}</td><td>$${h.total.toFixed(2)}</td><td>+${h.pts}</td></tr>`).join('')
-    : '<tr><td colspan="5" style="color:#333">No transactions yet</td></tr>'
+    ? hist.map(h => {
+        const type = h.type || 'order'
+        const typeBadge = type === 'order'
+          ? '<span class="type-badge type-order">Order</span>'
+          : type === 'bonus'
+            ? '<span class="type-badge type-bonus">Bonus</span>'
+            : '<span class="type-badge type-redeem">Redeem</span>'
+        const ptsStr = h.pts >= 0 ? `+${h.pts}` : `${h.pts}`
+        const ptsColor = h.pts >= 0 ? '#4ade80' : '#f87171'
+        return `<tr>
+          <td>${new Date(h.date).toLocaleDateString()}</td>
+          <td>${h.customerName}</td>
+          <td>${typeBadge}</td>
+          <td>${h.services}</td>
+          <td>${h.total ? '$'+h.total.toLocaleString() : '—'}</td>
+          <td style="color:${ptsColor};font-weight:900">${ptsStr}</td>
+        </tr>`
+      }).join('')
+    : '<tr><td colspan="6" style="color:#333">No transactions yet</td></tr>'
+}
+
+async function loadBonusHistory() {
+  const hist = await fetch(`${API}/history`).then(r=>r.json())
+  const bonuses = hist.filter(h => h.type === 'bonus' || h.type === 'redeem')
+  document.getElementById('bonusHistTable').innerHTML = bonuses.length
+    ? bonuses.map(h => {
+        const typeBadge = h.type === 'bonus'
+          ? '<span class="type-badge type-bonus">Bonus</span>'
+          : '<span class="type-badge type-redeem">Redeem</span>'
+        const ptsStr = h.pts >= 0 ? `+${h.pts}` : `${h.pts}`
+        const ptsColor = h.pts >= 0 ? '#818cf8' : '#f87171'
+        return `<tr>
+          <td>${new Date(h.date).toLocaleDateString()}</td>
+          <td>${h.customerName}</td>
+          <td>${typeBadge}</td>
+          <td>${h.services}</td>
+          <td style="color:${ptsColor};font-weight:900">${ptsStr}</td>
+        </tr>`
+      }).join('')
+    : '<tr><td colspan="5" style="color:#333">No bonuses or redemptions yet</td></tr>'
 }
 
 function showTab(id, el) {
@@ -878,12 +1083,10 @@ async function addCustomer() {
 async function addService() {
   const name  = document.getElementById('svcName').value.trim()
   const price = parseFloat(document.getElementById('svcPrice').value)
-  const pts   = parseInt(document.getElementById('svcPts').value)
-  if (!name || isNaN(price) || isNaN(pts)) { toast('Fill all fields'); return }
-  await fetch(`${API}/services`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name,price,pts}) })
+  if (!name || isNaN(price)) { toast('Fill all fields'); return }
+  await fetch(`${API}/services`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name,price}) })
   document.getElementById('svcName').value  = ''
   document.getElementById('svcPrice').value = ''
-  document.getElementById('svcPts').value   = ''
   loadAdmin(); loadEmpServices(); toast('Service added')
 }
 
@@ -893,15 +1096,15 @@ async function delService(id) {
 }
 
 async function addReward() {
-  const name     = document.getElementById('rewardName').value.trim()
-  const pts      = parseInt(document.getElementById('rewardPts').value)
-  const tier     = document.getElementById('rewardTier').value
-  const discount = parseInt(document.getElementById('rewardDisc').value) || 0
-  if (!name || isNaN(pts)) { toast('Fill all fields'); return }
-  await fetch(`${API}/rewards`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name,pts,tier,discount}) })
+  const name = document.getElementById('rewardName').value.trim()
+  const pts  = parseInt(document.getElementById('rewardPts').value)
+  const tier = document.getElementById('rewardTier').value
+  const note = document.getElementById('rewardNote').value.trim()
+  if (!name || isNaN(pts)) { toast('Fill reward name and points'); return }
+  await fetch(`${API}/rewards`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name,pts,tier,note}) })
   document.getElementById('rewardName').value = ''
   document.getElementById('rewardPts').value  = ''
-  document.getElementById('rewardDisc').value = ''
+  document.getElementById('rewardNote').value = ''
   loadRewards(); toast('Reward added')
 }
 
@@ -910,9 +1113,45 @@ async function delReward(id) {
   loadRewards(); toast('Reward removed')
 }
 
+// ── Bonuses ───────────────────────────────────────────────────────────────────
+function updateBonusPts() {
+  // referral and event are both 1pt by default
+  document.getElementById('bonusPts').value = '1'
+}
+
+async function awardBonus() {
+  const phone  = document.getElementById('bonusPhone').value.replace(/\D/g,'')
+  const type   = document.getElementById('bonusType').value
+  const note   = document.getElementById('bonusNote').value.trim()
+  const pts    = parseInt(document.getElementById('bonusPts').value)
+  const msg    = document.getElementById('bonusMsg')
+
+  if (!phone || phone.length < 10) { msg.textContent = 'Enter a valid phone number'; return }
+  if (isNaN(pts) || pts < 1) { msg.textContent = 'Points must be at least 1'; return }
+
+  const lookupRes = await fetch(`${API}/customers/phone/${phone}`)
+  if (!lookupRes.ok) { msg.textContent = 'Customer not found'; return }
+  const customer = await lookupRes.json()
+
+  const reason = note ? `${type} — ${note}` : type
+  const res = await fetch(`${API}/customers/${customer.id}/bonus`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ pts, reason })
+  })
+  if (!res.ok) { const e=await res.json(); msg.textContent = e.error; return }
+
+  msg.textContent = `+${pts} pt${pts>1?'s':''} awarded to ${customer.first} ${customer.last}`
+  document.getElementById('bonusPhone').value = ''
+  document.getElementById('bonusNote').value  = ''
+  document.getElementById('bonusPts').value   = '1'
+  loadBonusHistory()
+  toast(`Bonus awarded to ${customer.first}`)
+}
+
 // ── Employee ──────────────────────────────────────────────────────────────────
 async function loadEmpServices() {
   empServices = await fetch(`${API}/services`).then(r=>r.json())
+  allRewards  = await fetch(`${API}/rewards`).then(r=>r.json())
   renderServiceGrid()
 }
 
@@ -920,8 +1159,7 @@ function renderServiceGrid() {
   document.getElementById('serviceGrid').innerHTML = empServices.map(s =>
     `<div class="service-btn" id="svc-${s.id}" onclick="toggleService(${s.id})">
       <div class="sname">${s.name}</div>
-      <div class="sprice">$${s.price.toFixed(2)}</div>
-      <div class="spts">+${s.pts} pts</div>
+      <div class="sprice">$${s.price.toLocaleString()}</div>
     </div>`
   ).join('')
 }
@@ -934,14 +1172,16 @@ function lookupPhone(val) {
 
 async function doLookup(val) {
   const digits = val.replace(/\D/g,'')
-  const custFound = document.getElementById('custFound')
+  const custFound    = document.getElementById('custFound')
   const orderSection = document.getElementById('orderSection')
-  const noCust = document.getElementById('noCustMsg')
-  const regNew = document.getElementById('registerNew')
+  const redeemSection = document.getElementById('redeemSection')
+  const noCust       = document.getElementById('noCustMsg')
+  const regNew       = document.getElementById('registerNew')
   resetOrder()
 
   if (digits.length < 10) {
     custFound.style.display = 'none'; orderSection.style.display = 'none'
+    redeemSection.style.display = 'none'
     noCust.style.display = 'none'; regNew.style.display = 'none'
     return
   }
@@ -951,10 +1191,13 @@ async function doLookup(val) {
     currentCustomer = await res.json()
     noCust.style.display = 'none'; regNew.style.display = 'none'
     custFound.style.display = 'block'; orderSection.style.display = 'block'
+    redeemSection.style.display = 'block'
     renderCustomerCard(currentCustomer)
+    renderRedeemSection(currentCustomer)
   } else {
     currentCustomer = null
     custFound.style.display = 'none'; orderSection.style.display = 'none'
+    redeemSection.style.display = 'none'
     noCust.style.display = 'block'; regNew.style.display = 'block'
     document.getElementById('rFirst').value = ''
     document.getElementById('rLast').value  = ''
@@ -963,18 +1206,92 @@ async function doLookup(val) {
 }
 
 function renderCustomerCard(c) {
-  document.getElementById('custInitials').textContent = c.first[0] + (c.last?.[0] || '')
+  document.getElementById('custInitials').textContent  = c.first[0] + (c.last?.[0] || '')
   document.getElementById('custNameText').textContent  = c.first + ' ' + c.last
   document.getElementById('custPhoneText').textContent = fmtPhone(c.phone)
   document.getElementById('custVehicleText').textContent = c.vehicle || ''
   document.getElementById('custPts').textContent = c.points
-  document.getElementById('custTierBadge').innerHTML = tierBadge(getTier(c.points))
-  const tier = getTier(c.points)
+
+  const spend = c.lifetimeSpend || 0
+  const tier  = getTier(spend)
+  document.getElementById('custTierBadge').innerHTML = tierBadge(tier)
   document.getElementById('custTierLabel').textContent = tier
-  const next = tier==='Gold' ? 'Max tier reached' : tier==='Silver' ? `${1000-c.points} pts to Gold` : `${500-c.points} pts to Silver`
-  document.getElementById('custNextTier').textContent = next
-  const pct = tier==='Gold' ? 100 : tier==='Silver' ? ((c.points-500)/500)*100 : (c.points/500)*100
-  document.getElementById('pointsFill').style.width = Math.min(100,Math.max(0,pct)) + '%'
+
+  // Progress bar + next tier label
+  let pct, nextLabel
+  if (tier === 'Gold') {
+    pct = 100; nextLabel = 'Max tier reached'
+  } else if (tier === 'Silver') {
+    pct = ((spend - 200000) / 250000) * 100
+    nextLabel = `$${Math.ceil((450000 - spend) / 1000)}k to Gold`
+  } else if (tier === 'Bronze') {
+    pct = ((spend - 100000) / 100000) * 100
+    nextLabel = `$${Math.ceil((200000 - spend) / 1000)}k to Silver`
+  } else {
+    pct = (spend / 100000) * 100
+    nextLabel = spend > 0 ? `$${Math.ceil((100000 - spend) / 1000)}k to Bronze` : '$100k to Bronze'
+  }
+  document.getElementById('pointsFill').style.width = Math.min(100, Math.max(0, pct)) + '%'
+  document.getElementById('custNextTier').textContent = nextLabel
+
+  // Tier benefits strip
+  const benefits = getTierBenefits(tier)
+  document.getElementById('tierBenefitsStrip').innerHTML = benefits
+    ? `<div class="tbenefit"><strong>${benefits.disc}</strong> off invoices</div>
+       <div class="tbenefit"><strong>${benefits.kits}</strong> free repair kit${benefits.kits>1?'s':''}/week</div>
+       ${benefits.paint ? '<div class="tbenefit"><strong>Free paint</strong> on release days</div>' : ''}`
+    : `<div class="tbenefit no-tier">No tier yet — spend $${Math.ceil((100000-spend)/1000)}k more to unlock Bronze</div>`
+}
+
+function getTierBenefits(tier) {
+  if (tier === 'Bronze') return { disc: '2%', kits: 1, paint: false }
+  if (tier === 'Silver') return { disc: '5%', kits: 3, paint: false }
+  if (tier === 'Gold')   return { disc: '8%', kits: 5, paint: true  }
+  return null
+}
+
+function renderRedeemSection(c) {
+  const spend = c.lifetimeSpend || 0
+  const tier  = getTier(spend)
+  const tierRank = { 'Member': 0, 'Bronze': 1, 'Silver': 2, 'Gold': 3 }
+  const custRank = tierRank[tier] || 0
+
+  const eligible = allRewards.filter(r => {
+    const minRank = tierRank[r.tier] || 0
+    return custRank >= minRank
+  })
+
+  if (!eligible.length) {
+    document.getElementById('redeemList').innerHTML = '<p style="font-size:10px;color:#333;letter-spacing:1px;">No rewards available yet.</p>'
+    return
+  }
+
+  document.getElementById('redeemList').innerHTML = eligible.map(r => {
+    const canAfford = c.points >= r.pts
+    return `<div class="redeem-item${canAfford ? '' : ' disabled'}">
+      <div>
+        <div class="redeem-name">${r.name}</div>
+        <div class="redeem-cost">${r.pts} pts required · You have ${c.points} pts</div>
+        ${r.note ? `<div class="redeem-note">${r.note}</div>` : ''}
+      </div>
+      <button class="btn-redeem" onclick="redeemReward(${r.id})" ${canAfford ? '' : 'disabled'}>Redeem</button>
+    </div>`
+  }).join('')
+}
+
+async function redeemReward(rewardId) {
+  if (!currentCustomer) { toast('No customer selected'); return }
+  if (!confirm('Confirm redemption? Points will be deducted immediately.')) return
+  const res = await fetch(`${API}/customers/${currentCustomer.id}/redeem`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ rewardId })
+  })
+  if (!res.ok) { const e=await res.json(); toast(e.error || 'Redemption failed'); return }
+  const data = await res.json()
+  currentCustomer = data.customer
+  renderCustomerCard(data.customer)
+  renderRedeemSection(data.customer)
+  toast('Reward redeemed!')
 }
 
 function toggleService(id) {
@@ -988,9 +1305,9 @@ function toggleService(id) {
 function updateOrderTotal() {
   const sel   = empServices.filter(s => selectedServiceIds.includes(s.id))
   const total = sel.reduce((a,s) => a+s.price, 0)
-  const pts   = sel.reduce((a,s) => a+s.pts,   0)
-  document.getElementById('orderTotal').textContent     = '$' + total.toFixed(2)
-  document.getElementById('orderPtsPreview').textContent = '+' + pts + ' points'
+  const pts   = Math.floor(total / 10000)
+  document.getElementById('orderTotal').textContent      = '$' + total.toLocaleString()
+  document.getElementById('orderPtsPreview').textContent = pts > 0 ? `+${pts} point${pts>1?'s':''}` : 'Under $10k — 0 points'
 }
 
 function resetOrder() {
@@ -1008,10 +1325,12 @@ async function submitOrder() {
   })
   if (!res.ok) { toast('Order failed'); return }
   const data = await res.json()
-  toast(`Done! +${data.order.pts} pts for ${data.customer.first}`)
+  const ptsMsg = data.order.pts > 0 ? ` +${data.order.pts} pt${data.order.pts>1?'s':''}` : ' (no pts this order)'
+  toast(`Done!${ptsMsg} for ${data.customer.first}`)
   resetOrder()
   currentCustomer = data.customer
   renderCustomerCard(data.customer)
+  renderRedeemSection(data.customer)
 }
 
 async function registerFromEmp() {
@@ -1027,23 +1346,30 @@ async function registerFromEmp() {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function getTier(pts) {
-  if (pts >= 1000) return 'Gold'
-  if (pts >= 500)  return 'Silver'
-  return 'Bronze'
+function getTier(lifetimeSpend) {
+  if (lifetimeSpend >= 450000) return 'Gold'
+  if (lifetimeSpend >= 200000) return 'Silver'
+  if (lifetimeSpend >= 100000) return 'Bronze'
+  return 'Member'
 }
+
 function tierBadge(t) {
-  if (t==='Gold')   return '<span class="badge badge-gold">Gold</span>'
-  if (t==='Silver') return '<span class="badge badge-silver">Silver</span>'
-  return '<span class="badge badge-bronze">Bronze</span>'
+  if (t === 'Gold')   return '<span class="badge badge-gold">Gold</span>'
+  if (t === 'Silver') return '<span class="badge badge-silver">Silver</span>'
+  if (t === 'Bronze') return '<span class="badge badge-bronze">Bronze</span>'
+  if (!t)             return ''
+  return '<span class="badge badge-member">Member</span>'
 }
+
 function fmtPhone(p) {
   return p.length===10 ? `(${p.slice(0,3)}) ${p.slice(3,6)}-${p.slice(6)}` : p
 }
+
 function toggleEl(id) {
   const el = document.getElementById(id)
   el.style.display = el.style.display==='block' ? 'none' : 'block'
 }
+
 function toast(msg) {
   const t = document.getElementById('toast')
   t.textContent = msg; t.style.display = 'block'
